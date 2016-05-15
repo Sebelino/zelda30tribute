@@ -12,6 +12,11 @@ localhost webserver or your own webserver.
 
 Download the www/ folder and all of its contents. Start up a local webserver and open index.html in a browser.
 
+**Note**: You also need to download the missing assets and place them in their respective directories. Make sure that you have Python 2 installed and use the CLI script `manage_assets.py` to download the assets from an external mirror and "unpack" them, like so:
+```bash
+python2 manage_assets.py download
+python2 manage_assets.py unpack
+```
 
 #### In your own site
 
@@ -25,3 +30,5 @@ index.html in a browser.
 This is released under the [MIT License](http://mit-license.org/) (see [License.txt](LICENSE.txt)). 
 
 The Zelda 30 Year Tribute project launched in April 2015. It got a bunch of press coverage and saw half a million unique visitors in 3 days. Nintendo shut the site down with a DMCA complaint (no action was taken against the authors, GitHub, or other hosting websites). So we took it down and open sourced it here. Enjoy!
+
+**Note**: This fork and every revision therein is purged of any copyright-infringing assets (obvious ones, anyway). That includes PNGs, MP3s, and other binaries.
