@@ -434,24 +434,53 @@ ace.Avatar.prototype.onTick = function(game) {
 	
   if (!this.isFrozen) {
 
+        if (game.lockStrafe && game.buttonWasPressed('TurnLeft')) {
+          var port = ace.counterClockwiseByFacing[this.facing];
+          this.facing = port;
+        } else if (game.lockStrafe && game.buttonWasPressed('TurnRight')) {
+          var starboard = ace.clockwiseByFacing[this.facing];
+          this.facing = starboard;
+        }
 		if (game.buttonIsDown('Left')) {
-			dx -= this.walkSpeed;
-			this.facing = 'left';
+            if (game.lockStrafe) {
+              var port = ace.counterClockwiseByFacing[this.facing];
+			  dx += ace.xMultByFacing[port] * this.walkSpeed;
+			  dy += ace.yMultByFacing[port] * this.walkSpeed;
+            } else {
+			  dx -= this.walkSpeed;
+			  this.facing = 'left';
+            }
 			isWalking = true;
 		}
 		if (game.buttonIsDown('Right')) {
-			dx += this.walkSpeed;
-			this.facing = 'right';
+            if (game.lockStrafe) {
+              var startboard = ace.clockwiseByFacing[this.facing];
+			  dx += ace.xMultByFacing[startboard] * this.walkSpeed;
+			  dy += ace.yMultByFacing[startboard] * this.walkSpeed;
+            } else {
+			  dx += this.walkSpeed;
+			  this.facing = 'right';
+            }
 			isWalking = true;
 		}
 		if (game.buttonIsDown('Up')) {
-			dy += this.walkSpeed;
-			this.facing = 'up';
+            if (game.lockStrafe) {
+			  dx += ace.xMultByFacing[this.facing] * this.walkSpeed;
+			  dy += ace.yMultByFacing[this.facing] * this.walkSpeed;
+            } else {
+			  dy += this.walkSpeed;
+              this.facing = 'up';
+            }
 			isWalking = true;
 		}
 		if (game.buttonIsDown('Down')) {
-			dy -= this.walkSpeed;
-			this.facing = 'down';
+            if (game.lockStrafe) {
+			  dx -= ace.xMultByFacing[this.facing] * this.walkSpeed;
+			  dy -= ace.yMultByFacing[this.facing] * this.walkSpeed;
+            } else {
+			  dy -= this.walkSpeed;
+			  this.facing = 'down';
+            }
 			isWalking = true;
 		}
 	
@@ -582,6 +611,16 @@ ace.Avatar.prototype.onTick = function(game) {
 				actor.onTouchAvatar(game);
 			}
 		}
+
+        if (game.buttonWasPressed('ToggleCamera')) {
+            if (game.perspective == 'topdown') {
+              game.perspective = 'tracking';
+              game.lockStrafe = true;
+            } else if (game.perspective == 'tracking') {
+              game.perspective = 'topdown';
+              game.lockStrafe = false;
+            }
+        }
 	
 		this.rotZ = ace.getRotZByFacing(this.facing);
   }
