@@ -82,6 +82,7 @@ ace.Game = function(divId, opt_settings) {
    * If 'topdown', the camera settles on the classic top-down view.
    * If 'tracking', the camera settles on a tracked third-person view (placed a fixed distance
    * behind and slightly above the avatar).
+   * If 'fps', the camera settles on a first-person view.
    */
   this.perspective = 'topdown';
 
@@ -822,35 +823,39 @@ ace.Game.prototype.updateCamera = function() {
     this.cameraEyeSpeed = .4;
   }
   
-  var targetOffset = this.currentRoom_.cameraTargetOffset;
-  var eyeOffset = this.currentRoom_.cameraEyeOffset;
-  if (targetOffset) {
-    targetX += targetOffset[0];
-    targetY += targetOffset[1];
-    quantizedZ += targetOffset[2];
-    eyeX += eyeOffset[0];
-    eyeY += eyeOffset[1];
-    eyeZ += eyeOffset[2];
+  if (this.perspective !== 'fps') {
+    var targetOffset = this.currentRoom_.cameraTargetOffset;
+    var eyeOffset = this.currentRoom_.cameraEyeOffset;
+    if (targetOffset) {
+      targetX += targetOffset[0];
+      targetY += targetOffset[1];
+      quantizedZ += targetOffset[2];
+      eyeX += eyeOffset[0];
+      eyeY += eyeOffset[1];
+      eyeZ += eyeOffset[2];
+    }
   }
   
-  if (this.perspective == 'tracking') {
+  if (this.perspective == 'fps') {
+    var behindDistance = 45;
+    var xdiff = -ace.xMultByFacing[this.avatar.facing] * behindDistance;
+    var ydiff = -ace.yMultByFacing[this.avatar.facing] * behindDistance;
+    var zdiff = 10;
+    eyeX = targetX+xdiff;
+    eyeY = targetY+ydiff;
+    quantizedZ += zdiff;
+    eyeZ = quantizedZ;
+  } else if (this.perspective == 'tracking') {
     var behindDistance = 200;
-    var xdiff = 0;
-    var ydiff = 0;
-    if(this.avatar.facing == 'down') {
-      ydiff = behindDistance;
-    } else if(this.avatar.facing == 'up') {
-      ydiff = -behindDistance;
-    } else if(this.avatar.facing == 'left') {
-      xdiff = behindDistance;
-    } else if(this.avatar.facing == 'right') {
-      xdiff = -behindDistance;
-    }
+    var xdiff = -ace.xMultByFacing[this.avatar.facing] * behindDistance;
+    var ydiff = -ace.yMultByFacing[this.avatar.facing] * behindDistance;
     var zdiff = 80;
-    vec3.set(this.targetEye_, targetX+xdiff, targetY+ydiff, quantizedZ+zdiff);
-  } else {
-    vec3.set(this.targetEye_, eyeX, eyeY, eyeZ);
+    eyeX = targetX+xdiff;
+    eyeY = targetY+ydiff;
+    eyeZ = quantizedZ+zdiff;
+  } else if (this.perspective == 'topdown') {
   }
+  vec3.set(this.targetEye_, eyeX, eyeY, eyeZ);
   vec3.set(this.targetTarget_, targetX, targetY, quantizedZ);
 
   vec3.subtract(this.cameraEyeDelta_, this.targetEye_, this.cameraEye_);
