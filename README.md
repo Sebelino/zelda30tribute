@@ -12,11 +12,17 @@ localhost webserver or your own webserver.
 
 Download the www/ folder and all of its contents. Start up a local webserver and open index.html in a browser.
 
-**Note**: You also need to download the missing assets and place them in their respective directories. Make sure that you have Python 2 installed and use the CLI script `manage_assets.py` to download the assets from an external mirror and "unpack" them, like so:
+**Note**: You also need to download the missing assets and place them in their respective directories. Make sure that you have Python 2.7 installed and use the CLI script `manage_assets.py` to download the assets from an external mirror and "unpack" them, like so:
 ```bash
 python2 manage_assets.py download
 python2 manage_assets.py unpack
 ```
+If you are running Windows and are clueless on how to do this, simply follow these steps:
+
+1. Create a file named `getassets.bat` in the same folder as `manage_assets.py`.
+2. Copy and paste the two lines above into it.
+3. You may need to replace `python2` with `python` or even with the full path (e.g. `C:\Python27\python.exe`).
+4. Double-click on the newly created file.
 
 #### In your own site
 
